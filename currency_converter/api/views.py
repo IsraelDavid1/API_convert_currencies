@@ -40,6 +40,7 @@ def convert_currency(request):
         'rate': rate
     })
 
-def currencies(request):
+def home(request):
     return render(request, 'home.html', {'currencies': currencies})
+
 

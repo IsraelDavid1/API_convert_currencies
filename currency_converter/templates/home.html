@@ -3,13 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>currency convertert</title>
+    <title>Currency Converter</title>
 </head>
 <body>
-    <h1>currency converter <br></h1>
-    <section class="converter">
-        
-    </section>
-    
+    <h1>Currency Converter</h1>
+    <form id="conversionForm">
+        <div id="send">
+            <label for="from">From:</label>
+            <select id="from" name="from">
+                {% for currency in currencies %}
+                    <option value="{{ currency }}">{{ currency }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="give">
+            <label for="to">To:</label>
+            <select id="to" name="to">
+                {% for currency in currencies %}
+                    <option value="{{ currency }}">{{ currency }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <label for="amount">Amount:</label>
+        <input id="amount" name="amount" type="number" value="">
+        <br>
+        <label for="convertedAmount">Converted Amount:</label>
+        <input id="convertedAmount" name="convertedAmount" type="text" value="" readonly>
+        <br>
+        <button type="button" onclick="convertCurrency()">Convert</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        function convertCurrency() {
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+            const amount = document.getElementById('amount').value;
+
+            fetch(`/convert?from=${from}&to=${to}&amount=${amount}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerHTML = `
+                        <p>${amount} ${data.from_currency} é igual a ${data.converted_amount} ${data.to_currency}</p>
+                        <p>Taxa de câmbio: ${data.rate}</p>
+                    `;
+                    document.getElementById('convertedAmount').value = data.converted_amount;
+                })
+                .catch(error => console.error('Erro:', error));
+        }
+    </script>
 </body>
 </html>
